@@ -6,8 +6,27 @@ const DATA_DIR = __DIR__ . '/../data/dataset';
 function loadJson(string $name): array
 {
     $path = DATA_DIR . '/' . $name;
+
+    if (!is_file($path)) {
+        throw new RuntimeException("Файл $name не найден.");
+    }
+
     $raw = file_get_contents($path);
-    return json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
+    if ($raw === false) {
+        throw new RuntimeException("Не удалось прочитать файл $name.");
+    }
+
+    try {
+        $data = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
+    } catch (JsonException $e) {
+        throw new RuntimeException("Файл $name повреждён: " . $e->getMessage());
+    }
+
+    if (!is_array($data)) {
+        throw new RuntimeException("Файл $name имеет неверный формат.");
+    }
+
+    return $data;
 }
 
 function saveJson(string $name, array $data): void

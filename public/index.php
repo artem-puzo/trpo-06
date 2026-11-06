@@ -17,9 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($title === '') {
             $error = 'Название заметки не может быть пустым.';
         } else {
-            addNote($title);
-            header('Location: index.php');
-            exit;
+            try {
+                addNote($title);
+                header('Location: index.php');
+                exit;
+            } catch (RuntimeException $e) {
+                $error = $e->getMessage();
+            }
         }
     } elseif ($action === 'set_name') {
         $name = trim((string)($_POST['name'] ?? ''));
@@ -37,10 +41,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$notes = loadNotes();
+$page = $_GET['page'] ?? 'list';
 
-render('list', [
-    'notes' => $notes,
-    'name'  => currentName(),
-    'error' => $error,
-]);
+switch ($page) {
+    case 'list':
+        try {
+            $notes = loadNotes();
+        } catch (RuntimeException $e) {
+            $notes = [];
+            $error = $error ?? $e->getMessage();
+        }
+        render('list', [
+            'notes' => $notes,
+            'name'  => currentName(),
+            'error' => $error,
+        ]);
+        break;
+
+    default:
+        http_response_code(404);
+        render('404', ['page' => (string)$page]);
+}
