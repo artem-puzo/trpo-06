@@ -57,6 +57,22 @@ switch ($page) {
             'error' => $error,
         ]);
         break;
+        
+    case 'scenarios':
+        try {
+            $scenarios = loadScenarios();
+            $users = loadUsers();
+        } catch (RuntimeException $e) {
+            $scenarios = $users = [];
+            $error = $e->getMessage();
+        }
+        render('scenarios', [
+            'scenarios' => $scenarios,
+            'users'     => $users,
+            'name'      => currentName(),
+            'error'     => $error,
+        ]);
+        break;
 
     default:
         http_response_code(404);

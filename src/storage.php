@@ -47,3 +47,13 @@ function addNote(string $title): void
     $notes[] = ['id' => $nextId, 'title' => $title, 'done' => false];
     saveJson('notes.json', $notes);
 }
+
+function loadUsers(): array
+{
+    return loadJson('users.json');
+}
+
+function loadScenarios(): array
+{
+    return loadJson('session_scenarios.json');
+}

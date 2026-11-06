@@ -6,6 +6,8 @@
 </head>
 <body>
   <header>
+    <a href="index.php?page=scenarios">Сценарии</a>
+
     Пользователь: <strong><?= e($name) ?></strong>
     <form method="post" action="index.php" style="display:inline">
       <input type="hidden" name="action" value="clear_name">
