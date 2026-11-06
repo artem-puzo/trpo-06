@@ -20,3 +20,11 @@ function loadNotes(): array
 {
     return loadJson('notes.json');
 }
+
+function addNote(string $title): void
+{
+    $notes = loadNotes();
+    $nextId = $notes ? max(array_column($notes, 'id')) + 1 : 1;
+    $notes[] = ['id' => $nextId, 'title' => $title, 'done' => false];
+    saveJson('notes.json', $notes);
+}
